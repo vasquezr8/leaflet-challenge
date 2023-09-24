@@ -1,5 +1,5 @@
 // Store our API endpoint as queryUrl.
-let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 function chooseColor(depth) {
     if (depth > 90) return "red";
@@ -22,7 +22,7 @@ d3.json(queryUrl).then(function (data) {
   }
 
   function chooseRadius(magnitude) {
-
+    return Math.sqrt(magnitude) * 7;
   }
 
   let earthquakes = L.geoJSON(data.features, {
@@ -73,7 +73,7 @@ function createMap(earthquakes) {
     center: [
       37.09, -95.71
     ],
-    zoom: 5,
+    zoom: 4.5,
     layers: [street, earthquakes]
   });
 
