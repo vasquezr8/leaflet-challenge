@@ -18,7 +18,7 @@ d3.json(queryUrl).then(function (data) {
   // Using the features array sent back in the API data, create a GeoJSON layer, and add it to the map.
 
   function useFeature(feature, layer) {
-    layer.bindPopup("<h3>" + feature.properties.mag + " Magnitude" + "</h3><hr><p>" + feature.geometry.coordinates[2] + " Kilometers Deep" + "</p>");
+    layer.bindPopup("<h3>" + feature.properties.place + "</h3><hr><p>" + feature.properties.mag + " Magnitude at a Depth of " + feature.geometry.coordinates[2] + " Kilometers" + "</p>");
   }
 
   function chooseRadius(magnitude) {
