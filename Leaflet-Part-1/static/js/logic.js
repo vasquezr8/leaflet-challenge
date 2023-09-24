@@ -1,6 +1,14 @@
 // Store our API endpoint as queryUrl.
 let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
+function chooseColor(depth) {
+    if (depth > 90) return "red";
+    else if (depth > 70) return "orange";
+    else if (depth > 50) return "yellow";
+    else if (depth > 30) return "green";
+    else if (depth > 10) return "blue";
+    else return "purple";
+}
 
 // Perform a GET request to the query URL.
 d3.json(queryUrl).then(function (data) {
@@ -13,14 +21,8 @@ d3.json(queryUrl).then(function (data) {
     layer.bindPopup("<h3>" + feature.properties.place + "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
   }
 
-  function chooseColor(depth) {
+  function chooseRadius(magnitude) {
 
-    if (depth > 90) return "red";
-    else if (depth > 70) return "orange";
-    else if (depth > 50) return "yellow";
-    else if (depth > 30) return "green";
-    else if (depth > 10) return "blue";
-    else return "purple";
   }
 
   let earthquakes = L.geoJSON(data.features, {
@@ -30,6 +32,7 @@ d3.json(queryUrl).then(function (data) {
             color: "white",
             fillColor: chooseColor(feature.geometry.coordinates[2]),
             fillOpacity: 0.5,
+            radius: chooseRadius(feature.properties.mag),
             weight: 1.5
         }
     },
@@ -79,5 +82,24 @@ function createMap(earthquakes) {
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
   }).addTo(myMap);
+
+  // Add legend to map
+  var legend = L.control({position: 'bottomright'});
+
+  legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [-10, 10, 30, 50, 70, 90];
+
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + chooseColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(myMap);
 
 }
