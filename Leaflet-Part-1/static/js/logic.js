@@ -13,8 +13,26 @@ d3.json(queryUrl).then(function (data) {
     layer.bindPopup("<h3>" + feature.properties.place + "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
   }
 
+  function chooseColor(depth) {
+
+    if (depth > 90) return "red";
+    else if (depth > 70) return "orange";
+    else if (depth > 50) return "yellow";
+    else if (depth > 30) return "green";
+    else if (depth > 10) return "blue";
+    else return "purple";
+  }
+
   let earthquakes = L.geoJSON(data.features, {
 
+    style: function(feature) {
+        return {
+            color: "white",
+            fillColor: chooseColor(feature.geometry.coordinates[2]),
+            fillOpacity: 0.5,
+            weight: 1.5
+        }
+    },
     onEachFeature: useFeature,
     pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng);
